@@ -146,8 +146,9 @@ The ordinary output is `dist/garmin-sync-fr955.prg`. Copy it to
 enter the HTTPS root URL and device token. The token editor does not display a
 saved token. Keep configuration files containing these values private. Builds
 made with `--tests` or `--smoke` are development artifacts; use the ordinary PRG
-for the watch. The watch's **Settings → Version** shows the installed app
-version, generated from the watch manifest when building.
+for the watch. Builds containing the unreleased version-display change show the
+installed app version under **Settings → Version**, generated from the watch
+manifest. The current Store release does not yet include this item.
 
 ## Sync and manage music
 
