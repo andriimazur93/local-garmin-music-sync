@@ -141,6 +141,15 @@ export PATH=/absolute/path/to/java-17/bin:$PATH
 bash scripts/build-watch.sh
 ```
 
+For automated Linux setup, `python3 scripts/provision-ciq-sdk.py ARCHIVE DEST`
+installs the pinned Garmin SDK 9.3.0 archive after checking its SHA-256 digest.
+The archive must be obtained from Garmin; the destination must not already
+exist. This installs the SDK only, not the separately obtained `fr955` device
+definition. Follow Garmin's SDK agreement and keep SDK files out of tracked
+files, for example under the gitignored `.local/` directory. The checksum pins
+the archive previously downloaded over HTTPS from Garmin; it is not an
+independent publisher signature.
+
 The ordinary output is `dist/garmin-sync-fr955.prg`. Copy it to
 `GARMIN/Apps` on the watch over USB, then safely eject. In the app's **Settings**,
 enter the HTTPS root URL and device token. The token editor does not display a
