@@ -141,6 +141,15 @@ export PATH=/absolute/path/to/java-17/bin:$PATH
 bash scripts/build-watch.sh
 ```
 
+For automated Linux setup, `python3 scripts/provision-ciq-sdk.py ARCHIVE DEST`
+installs the pinned Garmin SDK 9.3.0 archive after checking its SHA-256 digest.
+The archive must be obtained from Garmin; the destination must not already
+exist. This installs the SDK only, not the separately obtained `fr955` device
+definition. Follow Garmin's SDK agreement and keep SDK files out of tracked
+files, for example under the gitignored `.local/` directory. The checksum pins
+the archive previously downloaded over HTTPS from Garmin; it is not an
+independent publisher signature.
+
 The ordinary output is `dist/garmin-sync-fr955.prg`. Copy it to
 `GARMIN/Apps` on the watch over USB, then safely eject. In the app's **Settings**,
 enter the HTTPS root URL and device token. The token editor does not display a
@@ -313,6 +322,24 @@ After changing `watch/manifest.xml`'s app version, run the watch build script
 and include the regenerated `watch/resources/strings/version.xml` in the change.
 The Python test suite checks that this resource matches the manifest, including
 for builds made directly with the Connect IQ tools.
+
+For a versioned release, fetch existing tags, create a clean branch named
+`release/MAJOR.MINOR.PATCH`, and run
+`python3 scripts/prepare-watch-release.py . MAJOR.MINOR.PATCH`. It updates the
+watch manifest, generated version resource and Unreleased changelog section;
+review those changes before committing. It refuses dirty source, an existing
+local version tag, a mismatched branch and a version that does not increase.
+The command does not create or push a branch or tag, or publish a release.
+Check the remote for an existing tag as well: the script can only inspect local
+tags.
+
+After the reviewed release commit has an authorized tag, fetch `origin/main`
+and the tags, then run
+`python3 scripts/verify-release-tag.py . vMAJOR.MINOR.PATCH` on a clean checkout.
+It verifies that the tag exists, points to `HEAD`, matches the watch manifest,
+and is reachable from the fetched `origin/main`.
+For local package builds, setting `RELEASE_TAG` to that tag makes
+`scripts/build-release.sh` perform the same check before signing.
 
 ## Contribute
 

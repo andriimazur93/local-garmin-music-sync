@@ -1,0 +1,41 @@
+name: Connect IQ SDK provisioning
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/sdk-provision-check.yml
+      - scripts/provision-ciq-sdk.py
+      - tests/test_ciq_sdk_provision.py
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/sdk-provision-check.yml
+      - scripts/provision-ciq-sdk.py
+      - tests/test_ciq_sdk_provision.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sdk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Download pinned SDK from Garmin
+        run: |
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/ciq-sdk.zip" \
+            https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.3.0-2026-10-20-95888f262.zip
+      - name: Verify and install SDK
+        run: python3 scripts/provision-ciq-sdk.py "$RUNNER_TEMP/ciq-sdk.zip" "$RUNNER_TEMP/ciq-sdk"
+      - name: Check compiler version
+        run: |
+          "$RUNNER_TEMP/ciq-sdk/bin/monkeyc" --version | tee "$RUNNER_TEMP/ciq-version.txt"
+          grep -Fx 'Connect IQ Compiler version: 9.3.0' "$RUNNER_TEMP/ciq-version.txt"

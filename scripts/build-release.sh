@@ -8,6 +8,9 @@ if [[ -n "$(git status --porcelain --untracked-files=normal)" ]]; then
     echo 'Release builds require a clean tracked and untracked working tree.' >&2
     exit 1
 fi
+if [[ -n "${RELEASE_TAG:-}" ]]; then
+    python3 "$root/scripts/verify-release-tag.py" "$root" "$RELEASE_TAG"
+fi
 if [[ ! -f "$GARMIN_SIGNING_KEY" || ! -x "$CIQ_SDK_HOME/bin/monkeyc" ]]; then
     echo 'Connect IQ compiler or signing key is unavailable.' >&2
     exit 1
