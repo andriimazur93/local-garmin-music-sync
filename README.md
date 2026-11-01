@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/andriimazur93/garmin-sync/actions/workflows/ci.yml/badge.svg)](https://github.com/andriimazur93/garmin-sync/actions/workflows/ci.yml)
 
+<a href="https://apps.garmin.com/en-US/apps/87ad7799-b3c8-4c56-aa52-d8dbaae13573"><img src="https://developer.garmin.com/static/connect-iq_badge-dark-35b152d2074fb5abd7394662f78d8a4f.svg" alt="Download on the Connect IQ Store" width="200"></a>
+
 Local Music Sync is a self-hosted music manager for the Garmin Forerunner 955. Choose
 MP3s from a folder on your PC, request downloads or removals in a local browser,
 then start **Sync** on the watch. Downloaded tracks play offline through Garmin's
@@ -9,6 +11,9 @@ native music player.
 
 **First time here?** Follow [Getting started](GETTING_STARTED.md) for the ordered
 PC setup, HTTPS connection, watch installation and first music sync.
+
+Install the watch app from the [Connect IQ Store](https://apps.garmin.com/en-US/apps/87ad7799-b3c8-4c56-aa52-d8dbaae13573),
+or follow the guide to sideload the GitHub release.
 
 It supports one owner, one watch and one MP3 directory. The PC shows the watch's
 last **complete reported inventory** and its timestamp; a disconnected watch is
@@ -160,10 +165,11 @@ stable HTTPS URL. Keep the PC awake and connected while setting up and syncing.
 3. **Save the device token.** Run the init command above once and save its
    output privately. It contains `device_token` and `server_id`; the HTTPS root
    URL comes separately from Funnel. Do not share the token or configuration file.
-4. **Install and configure the app.** Get the ordinary FR955 PRG and matching
-   checksum from [GitHub Releases](https://github.com/andriimazur93/local-garmin-music-sync/releases),
-   or build it using the SDK steps above. Copy the PRG to the watch's
-   `GARMIN/Apps` folder over USB, safely eject the watch, then open
+4. **Install and configure the app.** Install [Local Music Sync from the Connect IQ Store](https://apps.garmin.com/en-US/apps/87ad7799-b3c8-4c56-aa52-d8dbaae13573).
+   Alternatively, get the ordinary FR955 PRG and matching checksum from
+   [GitHub Releases](https://github.com/andriimazur93/local-garmin-music-sync/releases),
+   or build it using the SDK steps above. To sideload the PRG, copy it to the
+   watch's `GARMIN/Apps` folder over USB and safely eject the watch. Open
    **Local Music Sync → Settings** and enter the HTTPS root URL and device token.
    The saved token is not shown again. Development builds marked `--tests` or
    `--smoke` are not for normal use.
