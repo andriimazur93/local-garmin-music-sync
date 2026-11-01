@@ -146,7 +146,8 @@ The ordinary output is `dist/garmin-sync-fr955.prg`. Copy it to
 enter the HTTPS root URL and device token. The token editor does not display a
 saved token. Keep configuration files containing these values private. Builds
 made with `--tests` or `--smoke` are development artifacts; use the ordinary PRG
-for the watch.
+for the watch. The watch's **Settings → Version** shows the installed app
+version, generated from the watch manifest when building.
 
 ## Sync and manage music
 
@@ -306,6 +307,11 @@ running it again. It produces the same five files as the workflow. Upload the
 ordinary PRG and its matching checksum to a GitHub release only when authorized;
 upload the `.iq` through the Garmin developer dashboard only when authorized.
 Automated builds do not establish simulator or physical-watch compatibility.
+
+After changing `watch/manifest.xml`'s app version, run the watch build script
+and include the regenerated `watch/resources/strings/version.xml` in the change.
+The Python test suite checks that this resource matches the manifest, including
+for builds made directly with the Connect IQ tools.
 
 ## Contribute
 

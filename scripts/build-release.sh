@@ -22,6 +22,7 @@ temp=$(mktemp -d "$root/dist/.watch-release.XXXXXXXX")
 trap 'rm -rf -- "$temp"' EXIT
 mkdir "$temp/source" "$temp/output"
 git archive HEAD | tar -x -C "$temp/source"
+python3 "$temp/source/scripts/generate-watch-version.py" "$temp/source/watch/manifest.xml" "$temp/source/watch/resources/strings/version.xml"
 revision=$(git rev-parse HEAD)
 version=$(python3 -c 'import sys,xml.etree.ElementTree as E; print(E.parse(sys.argv[1]).getroot()[0].attrib["version"])' "$temp/source/watch/manifest.xml")
 export JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS:-} -Djava.awt.headless=true"
