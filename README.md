@@ -314,6 +314,24 @@ and include the regenerated `watch/resources/strings/version.xml` in the change.
 The Python test suite checks that this resource matches the manifest, including
 for builds made directly with the Connect IQ tools.
 
+For a versioned release, fetch existing tags, create a clean branch named
+`release/MAJOR.MINOR.PATCH`, and run
+`python3 scripts/prepare-watch-release.py . MAJOR.MINOR.PATCH`. It updates the
+watch manifest, generated version resource and Unreleased changelog section;
+review those changes before committing. It refuses dirty source, an existing
+local version tag, a mismatched branch and a version that does not increase.
+The command does not create or push a branch or tag, or publish a release.
+Check the remote for an existing tag as well: the script can only inspect local
+tags.
+
+After the reviewed release commit has an authorized tag, fetch `origin/main`
+and the tags, then run
+`python3 scripts/verify-release-tag.py . vMAJOR.MINOR.PATCH` on a clean checkout.
+It verifies that the tag exists, points to `HEAD`, matches the watch manifest,
+and is reachable from the fetched `origin/main`.
+For local package builds, setting `RELEASE_TAG` to that tag makes
+`scripts/build-release.sh` perform the same check before signing.
+
 ## Contribute
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development rules. The device API uses

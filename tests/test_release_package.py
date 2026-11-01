@@ -53,6 +53,14 @@ def test_compiler_failure_does_not_publish_partial_release(tmp_path):
     assert not (repo / "dist" / "watch-release").exists()
 
 
+def test_build_rejects_mismatched_release_tag_before_compiling(tmp_path):
+    repo, env = repository(tmp_path)
+    env["RELEASE_TAG"] = "v999.0.0"
+    result = subprocess.run(["bash", "scripts/build-release.sh"], cwd=repo, env=env, capture_output=True, text=True)
+    assert result.returncode != 0
+    assert not (repo / "dist" / "watch-release").exists()
+
+
 def test_runner_keeps_registration_when_github_cannot_be_reached(tmp_path):
     repo, env = repository(tmp_path)
     runner = repo / ".local" / "actions-runner"
