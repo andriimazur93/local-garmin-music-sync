@@ -1,12 +1,14 @@
 # Changelog
 
-User-visible changes to Local Music Sync are recorded here. This project has not yet
-published a Connect IQ Store release.
+User-visible changes to Local Music Sync are recorded here. The watch app is
+available on the Connect IQ Store.
 
 ## [Unreleased]
 
 ### Changed
 
+- Show the installed app version in the watch Settings menu, generated from the
+  watch manifest. This change has not yet been published to the Store.
 - Add reusable GitHub bug-report and feature-request forms, with guidance for
   relevant environment details and redacting private configuration.
 - Add an ordered first-time setup guide, a prominent README entry point and
@@ -21,6 +23,8 @@ published a Connect IQ Store release.
 
 ### Validation
 
+- The simulator test checks the Settings version item and read-only selection;
+  this change has not been tested on a physical watch.
 - Browser interaction checks cover choices, filters, report preservation,
   association confirmation, errors, keyboard focus and mobile layouts.
 - Screenshots in the README use fixture data. This frontend change does not

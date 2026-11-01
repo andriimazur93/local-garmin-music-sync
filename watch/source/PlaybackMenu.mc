@@ -44,6 +44,7 @@ class ProviderSettingsMenu extends WatchUi.Menu2 {
         _urlItem = new WatchUi.MenuItem("HTTPS server URL", null, "ServerUrl", {});
         _tokenItem = new WatchUi.MenuItem("Device token", null, "DeviceToken", {});
         addItem(_urlItem); addItem(_tokenItem);
+        addItem(new WatchUi.MenuItem("Version", Application.loadResource(Rez.Strings.AppVersion), "AppVersion", {}));
     }
     function onShow() {
         _urlItem.setSubLabel(Application.Properties.getValue("ServerUrl") as String);
@@ -54,6 +55,7 @@ class ProviderSettingsDelegate extends WatchUi.Menu2InputDelegate {
     function initialize() { Menu2InputDelegate.initialize(); }
     function onSelect(item) {
         var key = item.getId() as String;
+        if (key.equals("AppVersion")) { return; }
         var initial = key.equals("DeviceToken") ? "" : (Application.Properties.getValue(key) as String);
         WatchUi.pushView(new WatchUi.TextPicker(initial), new ProviderSettingText(key), WatchUi.SLIDE_UP);
     }

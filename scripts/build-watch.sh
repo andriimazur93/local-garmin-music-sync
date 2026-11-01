@@ -36,6 +36,7 @@ elif [[ $# -ne 0 ]]; then
     exit 2
 fi
 mkdir -p "$project_root/dist"
+python3 "$project_root/scripts/generate-watch-version.py" "$project_root/watch/manifest.xml" "$project_root/watch/resources/strings/version.xml"
 cd "$project_root/watch"
 # SVG resource compilation does not require a running X server.
 export JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS:-} -Djava.awt.headless=true"
