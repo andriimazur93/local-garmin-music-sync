@@ -16,6 +16,7 @@ dist/
 *.db-wal
 *.pem
 *.key
+*.der
 developer_key*
 watch/bin/
 watch/gen/

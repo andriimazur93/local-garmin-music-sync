@@ -259,6 +259,54 @@ is not part of hosted CI: it requires the separately installed Connect IQ SDK
 and a private developer signing key. CI results also do not replace physical
 watch testing.
 
+### Prepare a watch release
+
+The manual **Prepare watch release** workflow builds a FR955 `.prg` and a Store
+`.iq` from the same `main` commit after the server checks pass. It uploads both,
+their `.sha256` files, and `build-info.txt` as a seven-day workflow artifact.
+Download the artifact from the Actions run, check `sha256sum -c *.sha256`, and review the
+commit and app version in `build-info.txt`. The build does not publish a GitHub
+release or submit an update to Garmin. Those actions need separate authorization.
+
+To enable the workflow, configure a trusted Linux x64 self-hosted runner in
+the ignored `.local/actions-runner/` directory with the `garmin-release` label
+and a `garmin-release` GitHub environment. This repository is public: GitHub
+recommends self-hosted runners only for private repositories. Keep this runner
+offline except when preparing a trusted release, and review queued jobs before
+starting it. A runner that can access the key can also run arbitrary job code.
+Restrict who can dispatch workflows, modify `main`, manage the runner, and approve
+the environment. Do not use this runner for pull requests or untrusted code: a
+self-hosted runner can access its local signing key. Keep the SDK, device package
+and original Store DER signing key under the ignored `.local/` directory; make
+them readable only by the runner account. Back up the key securely. The runner's
+job checkout is separate under `.local/actions-runner/_work/`; never point the
+job checkout at the main project root, because checkout cleanup removes ignored
+files. Create `.local/actions-runner/release.env` with shell assignments for
+absolute `CIQ_SDK_HOME` and `GARMIN_SIGNING_KEY` paths and a `PATH` that includes
+Java 17. Protect that file and never commit it. Install Python 3, the tested
+Connect IQ SDK 9.3.0 and the FR955 device package there. Confirm the configured
+key is the original Store key
+before a build: the workflow cannot establish the identity of the key itself.
+Install and register an ephemeral runner using GitHub's repository runner setup;
+include the `garmin-release` label. The local installation also needs `gh`
+authenticated with repository administration access to re-register after each
+job. Start it only when needed with `bash scripts/start-release-runner.sh`; it
+stops and deregisters after one job. Dispatch **Prepare watch release** on
+`main`, wait for the server checks, approve the protected environment in GitHub,
+and start the runner when the watch job is ready. For this repository the
+environment requires the owner's review and permits `main` only. Other
+repositories must configure their own equivalent protections. The SDK is not
+distributed with the artifacts.
+
+For a local build, set those same environment variables and run
+`bash scripts/build-release.sh` from a clean checkout with Java 17 on `PATH`.
+The script builds from a Git archive of `HEAD` and refuses to overwrite an
+existing `dist/watch-release` directory. Review and move previous output before
+running it again. It produces the same five files as the workflow. Upload the
+ordinary PRG and its matching checksum to a GitHub release only when authorized;
+upload the `.iq` through the Garmin developer dashboard only when authorized.
+Automated builds do not establish simulator or physical-watch compatibility.
+
 ## Contribute
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development rules. The device API uses
