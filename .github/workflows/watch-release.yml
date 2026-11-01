@@ -1,0 +1,63 @@
+name: Prepare watch release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Server checks
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install locked dependencies
+        run: |
+          python -m pip install -r requirements-build.lock
+          python -m pip install --no-build-isolation -r requirements-dev.lock
+      - name: Run tests
+        run: python -m pytest -q
+      - name: Build server wheel
+        run: python -m pip wheel --no-deps --no-build-isolation --wheel-dir /tmp/garmin-wheel .
+      - name: Build container image
+        run: docker build --tag garmin-sync:release-check .
+
+  watch:
+    name: Build signed watch packages
+    needs: checks
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, linux, x64, garmin-release]
+    environment: garmin-release
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Build both packages
+        run: |
+          runner_root="$(cd "$RUNNER_WORKSPACE/../.." && pwd -P)"
+          set -a
+          source "$runner_root/release.env"
+          set +a
+          bash scripts/build-release.sh
+      - name: Upload packages for review
+        uses: actions/upload-artifact@v7
+        with:
+          name: watch-release-${{ github.sha }}
+          path: |
+            dist/watch-release/garmin-sync-fr955.prg
+            dist/watch-release/garmin-sync-fr955.iq
+            dist/watch-release/garmin-sync-fr955.prg.sha256
+            dist/watch-release/garmin-sync-fr955.iq.sha256
+            dist/watch-release/build-info.txt
+          if-no-files-found: error
+          retention-days: 7
